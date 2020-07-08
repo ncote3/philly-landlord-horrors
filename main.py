@@ -1,6 +1,8 @@
 import csv
 from tqdm import tqdm
 import json
+import matplotlib.pyplot as plt
+import numpy as np
 
 def landlord_count(source, output):
     landlords = {}
@@ -74,9 +76,22 @@ def remove_one_off_landlords(source, output, significant_property_count):
     with open(output, 'w') as file:
             file.write(json.dumps(significant_landlords))
 
+def histogram(source, n_bins):
+    with open(source, mode='r') as file:
+        landlords_and_properties = file.read()
+    data = json.loads(landlords_and_properties)
+    landlord_count = len(data.keys())
+    x = []
+    for landlord in tqdm(data, total=landlord_count):
+        x.append(data[landlord]['total_properties'])
+
+    plt.hist(x, n_bins)
+    plt.show()
+
 def main():
 #     landlord_count('opa_properties_public.csv', 'unique_landlords.json')
 #     json_creator('opa_properties_public.csv', 'landlords_and_properties.json')
-    remove_one_off_landlords('landlords_and_properties.json', 'significant_landlords.json', 14)
+#     remove_one_off_landlords('landlords_and_properties.json', 'significant_landlords.json', 50)
+#     histogram('significant_landlords.json', 100)
 
 main()
