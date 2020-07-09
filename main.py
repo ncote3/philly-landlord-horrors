@@ -45,7 +45,8 @@ def json_creator(source, output):
             if row["owner_1"].strip() not in data.keys():
                 data[row["owner_1"].strip()] = {
                     'total_properties': 1,
-                    'properties': [row['location'].strip()]
+                    'properties': [row['location'].strip()],
+                    'prop_coords': [[row['lat'].strip(), row['lng'].strip()]]
                 }
                 line_count += 1
             else:
@@ -54,6 +55,9 @@ def json_creator(source, output):
                 data[row['owner_1'].strip()]['properties'] = properties
                 total_properties = data[row['owner_1'].strip()]['total_properties'] + 1
                 data[row['owner_1'].strip()]['total_properties'] = total_properties
+                prop_coords = data[row['owner_1'].strip()]['prop_coords']
+                prop_coords.append([row['lat'].strip(), row['lng'].strip()])
+                data[row['owner_1'].strip()]['prop_coords'] = prop_coords
 
                 line_count += 1
         with open(output, 'w') as file:
@@ -85,13 +89,13 @@ def histogram(source, n_bins):
     for landlord in tqdm(data, total=landlord_count):
         x.append(data[landlord]['total_properties'])
 
-    plt.hist(x, n_bins)
+    plt.hist(x, n_bins, log=True)
     plt.show()
 
 def main():
 #     landlord_count('opa_properties_public.csv', 'unique_landlords.json')
-#     json_creator('opa_properties_public.csv', 'landlords_and_properties.json')
-#     remove_one_off_landlords('landlords_and_properties.json', 'significant_landlords.json', 50)
+    json_creator('opa_properties_public.csv', 'landlords_and_properties.json')
+#     remove_one_off_landlords('landlords_and_properties.json', 'significant_landlords.json', 1)
 #     histogram('significant_landlords.json', 100)
 
 main()
