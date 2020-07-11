@@ -60,6 +60,13 @@ logged histogram to visualize gaps in ownership
 
 This function generates the json files needed to easier process data in other programs.
 
+`significant_landlords_generator(source, output, significant_property_count)`
+
+This function modifies a json file to contain only landlords with property counts higher than
+significant_property_count.
+
+The results are saved to a json file.
+
 `main()`
 
 Program driver, insert the function you want to use here.

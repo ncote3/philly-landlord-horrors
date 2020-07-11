@@ -97,8 +97,9 @@ def landlord_json_creator(source, output):
                 except:
                     print(row["owner_1"].strip(), "is missing a count.")
                 line_count += 1
+        sorted_landlords = sorted(landlords.items(), key=lambda x: x[1], reverse=True)
     with open(output, 'w') as file:
-        file.write(json.dumps(landlords))
+        file.write(json.dumps(sorted_landlords))
 
 # void property_json_creator(String source, String output)
 # This function creates a basic list of the properties in the data set.
@@ -163,13 +164,32 @@ def housing_justice_node_json_generator():
     print('Creating landlords.json...')
     landlord_json_creator('opa_properties_public.csv', 'landlords.json')
 
+# void significant_landlords_generator(String source, String output, int significant_property_count)
+# This function modifies a json file to contain only landlords with property counts higher than
+# significant_property_count.
+# The results are saved to a json file.
+def significant_landlords_generator(source, output, significant_property_count):
+    with open(source, mode='r') as file:
+        data = file.read()
+    landlords_and_properties = json.loads(data)
+    landlord_count = len(landlords_and_properties)
+    significant_landlords = []
+    for landlord in tqdm(landlords_and_properties, total=landlord_count):
+        if landlord[1] >= significant_property_count:
+            significant_landlords.append(landlord)
+    print('Significance Threshold: ', significant_property_count, 'Properties Owned')
+    print('Significant Landlords: ', len(significant_landlords))
+    with open(output, 'w') as file:
+            file.write(json.dumps(significant_landlords))
+
 def main():
 #     landlord_count('opa_properties_public.csv', 'unique_landlords.json')
 #     json_creator('opa_properties_public.csv', 'landlords_and_properties.json')
-#     remove_one_off_landlords('landlords_and_properties.json', 'significant_landlords.json', 1)
+#     remove_one_off_landlords('landlords_and_properties.json', 'significant_landlords.json', 200)
 #     histogram('significant_landlords.json', 100)
-#     landlord_json_creator('opa_properties_public.csv', 'landlords.json')
+    landlord_json_creator('opa_properties_public.csv', 'sorted_landlords.json')
+    significant_landlords_generator('sorted_landlords.json', 'significant_sorted_landlords.json', 50)
 #     property_json_creator('opa_properties_public.csv', 'properties.json')
-    housing_justice_node_json_generator()
+#     housing_justice_node_json_generator()
 
 main()
