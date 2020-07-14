@@ -47,31 +47,56 @@ def landlord_count(source, output):
 # It saves the results to a json file.
 def json_creator(source, output):
     data = {}
-
     with open(source, mode='r') as csv_file:
         csv_reader = csv.DictReader(csv_file)
         line_count = 0
         for row in tqdm(csv_reader, total=581456):
-            if line_count == 0:
-                line_count += 1
-            if row["owner_1"].strip() not in data.keys():
-                data[row["owner_1"].strip()] = {
-                    'total_properties': 1,
-                    'properties': [row['location'].strip()],
-                    'prop_coords': [[row['lat'].strip(), row['lng'].strip()]]
-                }
-                line_count += 1
-            else:
-                properties = data[row['owner_1'].strip()]['properties']
-                properties.append(row['location'].strip())
-                data[row['owner_1'].strip()]['properties'] = properties
-                total_properties = data[row['owner_1'].strip()]['total_properties'] + 1
-                data[row['owner_1'].strip()]['total_properties'] = total_properties
-                prop_coords = data[row['owner_1'].strip()]['prop_coords']
-                prop_coords.append([row['lat'].strip(), row['lng'].strip()])
-                data[row['owner_1'].strip()]['prop_coords'] = prop_coords
+            if line_count != 0: # The first iteration needs too ignore the csv headers
+                if row["owner_1"].strip() not in data.keys():
+                    address = row['location'].strip()  # So it makes more sense
 
-                line_count += 1
+                    data[row["owner_1"].strip()] = {
+                        'total_properties': 1,
+                        'properties': {
+                            address: {
+                                'location': [row['lat'].strip(), row['lng'].strip()],
+                                'category': row['category_code_description'].strip(),
+                                'owner_2': row['owner_2'].strip(),
+                                'sale_date': row['sale_date'].strip(),
+                                'sale_price': row['sale_price'].strip(),
+                                'year_built': row['year_built'].strip(),
+                                'year_built_estimate': row['year_built_estimate'].strip(),
+                                'recording_date': row['recording_date'],
+                            },
+                        },
+                    }
+                else:
+                    # Setting the data to var names for easier reading
+                    owner_1 = data[row['owner_1'].strip()]
+                    lat = row['lat'].strip()
+                    long = row['lng'].strip()
+                    category_code_description = row['category_code_description'].strip()
+                    owner_2 = row['owner_2'].strip()
+                    sale_date = row['sale_date'].strip()
+                    sale_price = row['sale_price'].strip()
+                    year_built = row['year_built'].strip()
+                    year_built_estimate = row['year_built_estimate'].strip()
+                    recording_date = row['recording_date']
+
+                    # Update and add values
+                    owner_1['total_properties'] += 1
+                    owner_1['properties'][row['location']] = {
+                                'location': [lat, long],
+                                'category': category_code_description,
+                                'owner_2': owner_2,
+                                'sale_date': sale_date,
+                                'sale_price': sale_price,
+                                'year_built': year_built,
+                                'year_built_estimate': year_built_estimate,
+                                'recording_date': recording_date,
+                            },
+            line_count += 1
+
     with open(output, 'w') as file:
         file.write(json.dumps(data))
 
@@ -184,11 +209,11 @@ def significant_landlords_generator(source, output, significant_property_count):
 
 def main():
 #     landlord_count('opa_properties_public.csv', 'unique_landlords.json')
-#     json_creator('opa_properties_public.csv', 'landlords_and_properties.json')
+    json_creator('opa_properties_public.csv', 'landlords_and_properties.json')
 #     remove_one_off_landlords('landlords_and_properties.json', 'significant_landlords.json', 200)
 #     histogram('significant_landlords.json', 100)
-    landlord_json_creator('opa_properties_public.csv', 'sorted_landlords.json')
-    significant_landlords_generator('sorted_landlords.json', 'significant_sorted_landlords.json', 50)
+#     landlord_json_creator('opa_properties_public.csv', 'sorted_landlords.json')
+#     significant_landlords_generator('sorted_landlords.json', 'significant_sorted_landlords.json', 50)
 #     property_json_creator('opa_properties_public.csv', 'properties.json')
 #     housing_justice_node_json_generator()
 
