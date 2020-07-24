@@ -35,7 +35,6 @@ def landlord_count(source, output):
     landlord_count = len(landlords)
     print("There are ", line_count, "properties in this data set.")
     print("There are ", landlord_count, "unique owner_1's.")
-    print("That's ", line_count/landlord_count, "properties per landlord!")
 
     sorted_landlords = sorted(landlords.items(), key=lambda x: x[1], reverse=True)
     with open(output, 'w') as file:
@@ -67,8 +66,9 @@ def json_creator(source, output):
                                 'year_built': row['year_built'].strip(),
                                 'year_built_estimate': row['year_built_estimate'].strip(),
                                 'recording_date': row['recording_date'],
-                            },
-                        },
+                                'zip_code': row['zip_code']
+                            }
+                        }
                     }
                 else:
                     # Setting the data to var names for easier reading
@@ -82,6 +82,7 @@ def json_creator(source, output):
                     year_built = row['year_built'].strip()
                     year_built_estimate = row['year_built_estimate'].strip()
                     recording_date = row['recording_date']
+                    zip_code = row['zip_code']
 
                     # Update and add values
                     owner_1['total_properties'] += 1
@@ -94,7 +95,8 @@ def json_creator(source, output):
                                 'year_built': year_built,
                                 'year_built_estimate': year_built_estimate,
                                 'recording_date': recording_date,
-                            },
+                                'zip_code': zip_code
+                            }
             line_count += 1
 
     with open(output, 'w') as file:
@@ -176,7 +178,11 @@ def histogram(source, n_bins):
     for landlord in tqdm(data, total=landlord_count):
         x.append(data[landlord]['total_properties'])
 
-    plt.hist(x, n_bins, log=True)
+    fig,ax = plt.subplots(1,1)
+    ax.hist(x, n_bins, log=True, color=['grey'])
+    ax.set_title('Histogram of Property Ownership')
+    ax.set_xlabel('No. of Properties Owned')
+    ax.set_ylabel('No. of Owners (Logged)')
     plt.show()
 
 # void housing_justice_node_json_generator()
@@ -207,14 +213,63 @@ def significant_landlords_generator(source, output, significant_property_count):
     with open(output, 'w') as file:
             file.write(json.dumps(significant_landlords))
 
+def how_many_landlords(source):
+    with open(source, mode='r') as file:
+        data = file.read()
+    landlords = json.loads(data)
+    landlord_count = len(landlords)
+    print("There are ", landlord_count, "in this dataset.")
+
+def landlord_stats(source, output):
+    with open(source, mode='r') as file:
+        data = file.read()
+    landlords_and_properties = json.loads(data)
+    landlord_count = len(landlords_and_properties)
+    landlords = {}
+    for landlord in tqdm(landlords_and_properties, total=landlord_count):
+        properties = landlords_and_properties[landlord]['properties']
+        property_ages = []
+        unknown_age_count = 0
+        has_age_estimates = False
+        sale_prices = []
+        num_dollar_props = 0
+        purchase_years = []
+        for property in tqdm(properties, len(properties)):
+            # average property age
+            if property['year_built'] == '0000':
+                unknown_age_count += 1
+            else:
+                if (property['year_built_estimate'] == 'Y'):
+                    has_age_estimates = True
+                try:
+                    int_year = int(property['year_built'])
+                    property_ages.append(int_year)
+                except:
+                    print('Uhhh what the year didn\'t int.')
+                    print(landlord)
+
+            # average sale price
+            if property['sale_price'] == '1.0':
+                num_dollar_props += 1
+            else:
+                try:
+                    float_price = float(property['sale_price'])
+                    sale_prices.append(float_price)
+                except:
+                    print('Uhhh what the sale price didn\'t float.')
+                    print(landlord)
+                    print('\n')
+#  @TODO finish this function
+
 def main():
 #     landlord_count('opa_properties_public.csv', 'unique_landlords.json')
     json_creator('opa_properties_public.csv', 'landlords_and_properties.json')
 #     remove_one_off_landlords('landlords_and_properties.json', 'significant_landlords.json', 200)
-#     histogram('significant_landlords.json', 100)
+#     histogram('landlords_and_properties.json', 200)
 #     landlord_json_creator('opa_properties_public.csv', 'sorted_landlords.json')
 #     significant_landlords_generator('sorted_landlords.json', 'significant_sorted_landlords.json', 50)
 #     property_json_creator('opa_properties_public.csv', 'properties.json')
 #     housing_justice_node_json_generator()
-
+#     landlord_stats('landlords_and_properties.json', 'landlord_stats.json')
+#     how_many_landlords('unique_landlords.json')
 main()
