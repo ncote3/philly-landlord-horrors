@@ -165,7 +165,7 @@ def make_zip_tops_bar_chart(source):
         keys = [p[0] for p in pairs]
         values = [p[1] for p in pairs]
         plt.figure(figsize=(12, 8))
-        plt.title(zip_code + "Top Owners per Zip Code")
+        plt.title(zip_code + " Top Owners per Zip Code")
         plt.xlabel('owner_1')
         plt.ylabel('No. Properties')
         plt.bar(range(len(data[zip_code])), values, align='center', width=0.5)
