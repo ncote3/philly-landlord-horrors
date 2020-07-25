@@ -12,6 +12,8 @@ import numpy as np
 # This function creates a basic dictionary histogram of owner_1's
 # and how many properties they own.
 # It saves the results to a json file.
+
+
 def landlord_count(source, output):
     landlords = {}
 
@@ -44,6 +46,8 @@ def landlord_count(source, output):
 # This function creates a dictionary using owner_1's as a key and for the value a dictionary
 # of how many properties they own, a list of the properties, and the properties geo coordinates.
 # It saves the results to a json file.
+
+
 def json_creator(source, output):
     data = {}
     with open(source, mode='r') as csv_file:
@@ -105,6 +109,8 @@ def json_creator(source, output):
 # void landlord_json_creator(String source, String output)
 # This function creates a basic dictionary of owner_1's and how many properties they own.
 # It saves the results to a json file.
+
+
 def landlord_json_creator(source, output):
     landlords = {}
 
@@ -131,6 +137,8 @@ def landlord_json_creator(source, output):
 # void property_json_creator(String source, String output)
 # This function creates a basic list of the properties in the data set.
 # It saves the results to a json file.
+
+
 def property_json_creator(source, output):
     properties = []
 
@@ -149,6 +157,8 @@ def property_json_creator(source, output):
 # This function modifies a json file to contain only landlords with property counts higher than
 # significant_property_count.
 # The results are saved to a json file.
+
+
 def remove_one_off_landlords(source, output, significant_property_count):
     with open(source, mode='r') as file:
         data = file.read()
@@ -169,6 +179,8 @@ def remove_one_off_landlords(source, output, significant_property_count):
 # void histogram(String source, int n_bins)
 # This function takes json landlord histogram data and turns it into a
 # logged histogram to visualize gaps in ownership
+
+
 def histogram(source, n_bins):
     with open(source, mode='r') as file:
         landlords_and_properties = file.read()
@@ -187,6 +199,8 @@ def histogram(source, n_bins):
 
 # void housing_justice_node_json_generator()
 # This function generates the json files needed to easier process data in other programs.
+
+
 def housing_justice_node_json_generator():
     print('Creating landlords_and_properties.json...')
     json_creator('opa_properties_public.csv', 'landlords_and_properties.json')
@@ -199,6 +213,8 @@ def housing_justice_node_json_generator():
 # This function modifies a json file to contain only landlords with property counts higher than
 # significant_property_count.
 # The results are saved to a json file.
+
+
 def significant_landlords_generator(source, output, significant_property_count):
     with open(source, mode='r') as file:
         data = file.read()
@@ -220,46 +236,48 @@ def how_many_landlords(source):
     landlord_count = len(landlords)
     print("There are ", landlord_count, "in this dataset.")
 
-def landlord_stats(source, output):
-    with open(source, mode='r') as file:
-        data = file.read()
-    landlords_and_properties = json.loads(data)
-    landlord_count = len(landlords_and_properties)
-    landlords = {}
-    for landlord in tqdm(landlords_and_properties, total=landlord_count):
-        properties = landlords_and_properties[landlord]['properties']
-        property_ages = []
-        unknown_age_count = 0
-        has_age_estimates = False
-        sale_prices = []
-        num_dollar_props = 0
-        purchase_years = []
-        for property in tqdm(properties, len(properties)):
-            # average property age
-            if property['year_built'] == '0000':
-                unknown_age_count += 1
-            else:
-                if (property['year_built_estimate'] == 'Y'):
-                    has_age_estimates = True
-                try:
-                    int_year = int(property['year_built'])
-                    property_ages.append(int_year)
-                except:
-                    print('Uhhh what the year didn\'t int.')
-                    print(landlord)
 
-            # average sale price
-            if property['sale_price'] == '1.0':
-                num_dollar_props += 1
-            else:
-                try:
-                    float_price = float(property['sale_price'])
-                    sale_prices.append(float_price)
-                except:
-                    print('Uhhh what the sale price didn\'t float.')
-                    print(landlord)
-                    print('\n')
+# def landlord_stats(source, output):
+#     with open(source, mode='r') as file:
+#         data = file.read()
+#     landlords_and_properties = json.loads(data)
+#     landlord_count = len(landlords_and_properties)
+#     landlords = {}
+#     for landlord in tqdm(landlords_and_properties, total=landlord_count):
+#         properties = landlords_and_properties[landlord]['properties']
+#         property_ages = []
+#         unknown_age_count = 0
+#         has_age_estimates = False
+#         sale_prices = []
+#         num_dollar_props = 0
+#         purchase_years = []
+#         for property in tqdm(properties, len(properties)):
+#             # average property age
+#             if property['year_built'] == '0000':
+#                 unknown_age_count += 1
+#             else:
+#                 if (property['year_built_estimate'] == 'Y'):
+#                     has_age_estimates = True
+#                 try:
+#                     int_year = int(property['year_built'])
+#                     property_ages.append(int_year)
+#                 except:
+#                     print('Uhhh what the year didn\'t int.')
+#                     print(landlord)
+#
+#             # average sale price
+#             if property['sale_price'] == '1.0':
+#                 num_dollar_props += 1
+#             else:
+#                 try:
+#                     float_price = float(property['sale_price'])
+#                     sale_prices.append(float_price)
+#                 except:
+#                     print('Uhhh what the sale price didn\'t float.')
+#                     print(landlord)
+#                     print('\n')
 #  @TODO finish this function
+
 
 def main():
 #     landlord_count('opa_properties_public.csv', 'unique_landlords.json')
@@ -272,4 +290,6 @@ def main():
 #     housing_justice_node_json_generator()
 #     landlord_stats('landlords_and_properties.json', 'landlord_stats.json')
 #     how_many_landlords('unique_landlords.json')
+
+
 main()
