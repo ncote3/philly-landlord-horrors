@@ -201,6 +201,32 @@ def make_zip_tops_bar_chart(source):
         plt.savefig('./figures/top_in_zip_code/'+zip_code+'.png')
         plt.close()
 
+# Function used to format individual zip analysis data in a way that Victory (React Visualization Lib)
+# can use it.
+# Example usage in main()
+
+
+def format_data_for_react(source, output):
+    data = json.load(open(source))
+    output_object = {}
+    for zip_code in tqdm(data, total=len(data)):
+        plot_array = []
+        for owner in data[zip_code]:
+            plot_array.append({'owner': owner, 'property_count': data[zip_code][owner]})
+        output_object[zip_code] = plot_array
+    json.dump(output_object, open(output, 'w'))
+
+# Used to create bar chart data of the city's owner
+# Example usage in main()
+
+
+def city_wide_dist_for_react(source, output):
+    data = json.load(open(source))
+    output_a = []
+    for owner in tqdm(data, total=len(data)):
+        output_a.append({'owner': owner[0], 'property_count': owner[1]})
+    json.dump(output_a, open(output, 'w'))
+
 
 def main():
     # total_zip_analysis('opa_properties_public.csv', 'total_zip_counts.json')
@@ -211,7 +237,9 @@ def main():
     # get_single_zip_counts('landlord_zip_counts.json', '19104')
     # get_zip_tops('landlord_zip_counts.json', 'top_in_zip_full.json')
     # truncate_to_top_n('top_in_zip_full.json', 20)
-    make_zip_tops_bar_chart('top_20_in_all_zips.json')
+    # make_zip_tops_bar_chart('top_20_in_all_zips.json')
+    # format_data_for_react('./data_sets/top_20_in_all_zips.json', './data_sets/FE/zip_code_bar_data.json')
+    city_wide_dist_for_react('./data_sets/significant_sorted_landlords.json', './data_sets/FE/city_wide_dist.json')
 
 
 main()
