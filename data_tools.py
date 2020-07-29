@@ -22,9 +22,18 @@ def remove_significant_landlord(source, entry_to_remove):
     json.dump(data, open(source, 'w'))
 
 
+def print_property_addresses_by_owner(source, owner_string):
+    data = json.load(open(source))
+    for owner in data:
+        if owner_string == owner:
+            for property in data[owner]["properties"]:
+                print(property)
+
+
 def main():
     # remove_entry('./data_sets/landlords_and_properties.json', "PHILADELPHIA HOUSING AUTH")
-    remove_significant_landlord('./data_sets/significant_sorted_landlords.json', "PHILADELPHIA HOUSING AUTH")
+    # remove_significant_landlord('./data_sets/significant_sorted_landlords.json', "PHILADELPHIA HOUSING AUTH")
+    print_property_addresses_by_owner('./data_sets/landlords_and_properties.json', 'JAMISON ROAD ASSOC')
 
 
 main()
