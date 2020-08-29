@@ -18,3 +18,9 @@ The following needs to be installed in your python3 venv (I recommend pip):
 * `jupyter lab`
 
 Once these are installed simply run: `jupyter lab`.
+
+## To Build Dataset for Site
+Follow the instructions in `start_here.ipynb`.
+
+## Questions?
+Email me at noah.cote3@gmail.com!
