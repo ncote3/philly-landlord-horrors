@@ -8,3 +8,7 @@
 /data_sets/unique_landlords.json
 /data_sets/PHILADELPHIA HOUSING AUTH.json
 /data_sets/
+/analysis/owner/data/25_char_owner.json
+/analysis/owner/data/llc_owner.json
+/analysis/owner/data/not_llc_owner.json
+/analysis/owner/data/one_char_owner.json
