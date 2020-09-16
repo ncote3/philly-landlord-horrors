@@ -138,14 +138,23 @@ def find_address_owners(source):
                                   'Histogram of LLC Address Named owner_1s',
                                   './../figures/llc_address_owners_histogram.png')
 
-
+def find_one_prop_owners(source):
+    data = json.load(open(source))
+    count = 0
+    for owner in tqdm(data, total=len(data)):
+        if owner[1] == 1:
+            count += 1
+    percentage = (count / len(data)) * 100
+    print('There are ', count, 'one property owners in this dataset.')
+    print("That's ", percentage, '% of total owners.')
+    
 def main():
     # find_llc_owners('./../../../data_sets/sorted_landlords.json', './../data/llc_owner.json')
     # make_llc_owners_histogram('./../data/llc_owner.json', 100)
     # find_one_char_owner('./../../../data_sets/sorted_landlords.json', './../data/one_char_owner.json')
     # find_n_char_owner('./../../../data_sets/sorted_landlords.json', './../data/25_char_owner.json', 25)
     # make_char_count_owner_histogram('./../../../data_sets/sorted_landlords.json', 25)
-    find_address_owners('./../../../data_sets/landlords_and_properties.json')
-
+    # find_address_owners('./../../../data_sets/landlords_and_properties.json')
+    find_one_prop_owners('./../../../data_sets/sorted_landlords.json')
 
 main()
