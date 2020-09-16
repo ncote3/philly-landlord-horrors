@@ -2,6 +2,7 @@ from tqdm import tqdm
 import json
 import matplotlib.pyplot as plt
 import numpy
+import csv
 
 
 def find_llc_owners(source, output):
@@ -148,6 +149,26 @@ def find_one_prop_owners(source):
     print('There are ', count, 'one property owners in this dataset.')
     print("That's ", percentage, '% of total owners.')
     
+def get_owner_2_count(source, output):
+    owners = []
+    owner2_count = 0
+    with open(source, mode="r") as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        line_count = 0
+        for row in tqdm(csv_reader, total=581456):
+            if line_count == 0:
+                line_count += 1
+            else:
+                try:
+                    owners.append([row["owner_1"].strip(), row["owner_2"].strip()])
+                    if (row["owner_2"].strip() == ""):
+                        owner2_count += 1
+                except:
+                     print(row["owner_1"].strip(), "is missing a count.")
+    with open(output, 'w') as file:
+        file.write(json.dumps(owners))
+    print('There are ', owner2_count, 'owner_2s in this dataset.')
+    
 def main():
     # find_llc_owners('./../../../data_sets/sorted_landlords.json', './../data/llc_owner.json')
     # make_llc_owners_histogram('./../data/llc_owner.json', 100)
@@ -155,6 +176,7 @@ def main():
     # find_n_char_owner('./../../../data_sets/sorted_landlords.json', './../data/25_char_owner.json', 25)
     # make_char_count_owner_histogram('./../../../data_sets/sorted_landlords.json', 25)
     # find_address_owners('./../../../data_sets/landlords_and_properties.json')
-    find_one_prop_owners('./../../../data_sets/sorted_landlords.json')
+    # find_one_prop_owners('./../../../data_sets/sorted_landlords.json')
+    get_owner_2_count('./../../../data_sets/opa_properties_public.csv', './../../../data_sets/owner1_owner2.json')
 
 main()
