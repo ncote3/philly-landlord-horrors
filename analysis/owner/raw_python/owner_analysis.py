@@ -169,6 +169,73 @@ def get_owner_2_count(source, output):
         file.write(json.dumps(owners))
     print('There are ', owner2_count, 'owner_2s in this dataset.')
     
+def get_owners_and_mailing_address(source, output):
+    owners_with_mailing_address = []
+    mailing_address_count = 0
+    with open(source, mode="r") as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        line_count = 0
+        owner_1_count = 0
+        owner_2_count = 0
+        mailing_address_1_count = 0
+        mailing_address_2_count = 0
+        mailing_care_of_count = 0
+        mailing_city_state_count = 0
+        mailing_street_count = 0
+        mailing_zip_count = 0
+        for row in tqdm(csv_reader, total=581456):
+            if line_count == 0:
+                line_count += 1
+            else:
+                line_count += 1
+            
+                owner_1 = row["owner_1"].strip()
+                owner_2 = row["owner_2"].strip()
+                mailing_address_1 = row["mailing_address_1"].strip()
+                mailing_address_2 = row["mailing_address_2"].strip()
+                mailing_care_of = row["mailing_care_of"].strip()
+                mailing_city_state = row["mailing_city_state"].strip()
+                mailing_street = row["mailing_street"].strip()
+                mailing_zip = row["mailing_zip"].strip()
+                mailing_info = [
+                    mailing_address_1,
+                    mailing_address_2,
+                    mailing_care_of,
+                    mailing_city_state,
+                    mailing_street,
+                    mailing_zip
+                ]
+                owners_with_mailing_address.append([owner_1, owner_2, mailing_info])
+                if (owner_1 != ""):
+                    owner_1_count += 1
+                if (owner_2 != ""):
+                    owner_2_count += 1
+                if (mailing_address_1 != ""):
+                    mailing_address_1_count += 1
+                if (mailing_address_2 != ""):
+                    mailing_address_2_count += 1
+                if (mailing_care_of != ""):
+                    mailing_care_of_count += 1
+                if (mailing_city_state != ""):
+                    mailing_city_state_count += 1
+                if (mailing_street != ""):
+                    mailing_street_count += 1
+                if (mailing_zip != ""):
+                    mailing_zip_count += 1
+
+    with open(output, 'w') as file:
+        file.write(json.dumps(owners_with_mailing_address))
+    line_count -= 1 # need to account for the first line in the csv
+    print('There are ', line_count, 'properties in this dataset.')
+    print('There are ', owner_1_count, 'owner_1s in this dataset or ', (owner_1_count/line_count)*100, ' %.')
+    print('There are ', owner_2_count, 'owner_2s in this dataset or ', (owner_2_count/line_count)*100, ' %.')
+    print('There are ', mailing_address_1_count, 'mailing_address_1s in this dataset or ', (mailing_address_1_count/line_count)*100, ' %.')
+    print('There are ', mailing_address_2_count, 'mailing_address_2s in this dataset or ', (mailing_address_2_count/line_count)*100, ' %.')
+    print('There are ', mailing_care_of_count, 'mailing_care_ofs in this dataset or ', (mailing_care_of_count/line_count)*100, ' %.')
+    print('There are ', mailing_city_state_count, 'mailing_city_states in this dataset or ', (mailing_city_state_count/line_count)*100, ' %.')
+    print('There are ', mailing_street_count, 'mailing_streets in this dataset or ', (mailing_street_count/line_count)*100, ' %.')
+    print('There are ', mailing_zip_count, 'mailing_zips in this dataset or ', (mailing_zip_count/line_count)*100, ' %.')
+    
 def main():
     # find_llc_owners('./../../../data_sets/sorted_landlords.json', './../data/llc_owner.json')
     # make_llc_owners_histogram('./../data/llc_owner.json', 100)
@@ -177,6 +244,7 @@ def main():
     # make_char_count_owner_histogram('./../../../data_sets/sorted_landlords.json', 25)
     # find_address_owners('./../../../data_sets/landlords_and_properties.json')
     # find_one_prop_owners('./../../../data_sets/sorted_landlords.json')
-    get_owner_2_count('./../../../data_sets/opa_properties_public.csv', './../../../data_sets/owner1_owner2.json')
+    # get_owner_2_count('./../../../data_sets/opa_properties_public.csv', './../../../data_sets/owner1_owner2.json')
+    get_owners_and_mailing_address('./../../../data_sets/opa_properties_public.csv', './../../../data_sets/owners_mailing_address.json')
 
 main()
