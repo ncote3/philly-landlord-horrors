@@ -15,7 +15,7 @@ def find_llc_owners(source, output):
             count += 1
 
     json.dump(out, open(output, 'w+'))
-    print('There are ', count, 'LLCs in this dataset.')
+    print('There are ', count, 'LLCs in this dataset or ', (count/len(data))*100, '% of owners.')
 
 
 def make_llc_owners_histogram(source, n_bins):
