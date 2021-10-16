@@ -11,6 +11,12 @@ root of this repository. The program knows it as `opa_properties_public.csv`.
 
 This program uses Python3.
 
+
+To get a venv (Mac):
+1. `python3 -m venv env`
+2. `source env/bin/activate`
+3. `pip install [package]`
+
 The following needs to be installed in your python3 venv (I recommend pip):
 * `tqdm`
 * `numpy`
