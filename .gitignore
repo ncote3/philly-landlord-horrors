@@ -12,3 +12,5 @@
 /analysis/owner/data/llc_owner.json
 /analysis/owner/data/not_llc_owner.json
 /analysis/owner/data/one_char_owner.json
+env/
+.vscode/
