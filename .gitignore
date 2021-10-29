@@ -14,3 +14,11 @@
 /analysis/owner/data/one_char_owner.json
 env/
 .vscode/
+.ipynb_checkpoints/data_cleaning-checkpoint.ipynb
+.ipynb_checkpoints/data_generating-checkpoint.ipynb
+.ipynb_checkpoints/data_tools-checkpoint.ipynb
+.ipynb_checkpoints/start_here-checkpoint.ipynb
+analysis/owner/.ipynb_checkpoints/owner_analysis-checkpoint.ipynb
+analysis/owner/.ipynb_checkpoints/owner_truncation-checkpoint.ipynb
+analysis/zip_code/.ipynb_checkpoints/zip_code_analysis-checkpoint.ipynb
+.DS_Store
